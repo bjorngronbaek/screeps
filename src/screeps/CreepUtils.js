@@ -21,3 +21,4 @@
  console.log('['+creep.role+'] '+creep.name+': '+message);
  }
  };
+

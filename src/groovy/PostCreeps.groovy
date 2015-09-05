@@ -12,7 +12,7 @@ def username = props.username;
 def password = props.password;
 resourceAsStream.close()
 
-def data = [brach  : "test1", modules : new HashMap<String,String>()]
+def data = [branch  : "master", modules : new HashMap<String,String>()]
 
 def list = []
 def dir = new File("../screeps")
@@ -26,7 +26,6 @@ list.each {
     data.modules.put(file.name.lastIndexOf('.').with {it != -1 ? file.name[0..<it] : file.name},fileContents)
 }
 
-
 println new JsonBuilder(data).toPrettyString()
 
 def http = new HTTPBuilder('https://screeps.com')
@@ -39,5 +38,3 @@ http.request( POST, JSON ) { req ->
         println "success ${resp.statusLine}"
     }
 }
-
-

@@ -1,4 +1,4 @@
-/* nothing 2222 */
+/* MASTER 1*/
 var harvester = require('harvester');
 var builder = require('builder');
 var guard = require('guard');
@@ -87,3 +87,4 @@ function moveTo(role, pos) {
  factory.spawnGuard(Game.spawns.Spawn1,'55c34a6c5be41a0a6e80caff');
  }
  */
+
