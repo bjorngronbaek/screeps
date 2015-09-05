@@ -96,12 +96,12 @@ module.exports = (function (){
  
  var myStructures = this.repairSites = this.room.find(FIND_MY_STRUCTURES, {
  filter: function(i) {
- return i.hits < i.hitsMax / 2 && i.hits < 2500000;
+ return i.hits < i.hitsMax / 2 && i.hits < 3000000;
  }
  });
  var myWalls = this.room.find(FIND_STRUCTURES,{
  filter:function(struct){
- return struct.structureType == STRUCTURE_WALL && struct.hits < 1000000;
+ return struct.structureType == STRUCTURE_WALL && struct.hits < 1500000;
  }
  });
  this.repairSites = myStructures.concat(myWalls);
