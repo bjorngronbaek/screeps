@@ -40,8 +40,7 @@ module.exports = (function () {
 
         this.storageId;
 
-        this.result = function(){
-            return {
+        this.result =  {
                 hostiles : {
                     creeps : {
                         attackers : [],
@@ -56,7 +55,6 @@ module.exports = (function () {
                     }
                 }
             };
-        }
     }
 
     RoomAnalyzer.prototype.analyzeHostiles = function analyzeHostiles(){
@@ -67,7 +65,7 @@ module.exports = (function () {
                 }}
             );
             this.result.hostiles.creeps.all = this.room.find(FIND_HOSTILE_CREEPS);
-            this.result.hostiles.creeps.count = all.length();
+            this.result.hostiles.creeps.count = this.result.hostiles.creeps.all.length;
             this.isAnalyzedHostiles = true;
         }
     }

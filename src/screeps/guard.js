@@ -54,37 +54,53 @@ module.exports = function (creep) {
     }
     else {
         roomAnalyzer.analyzeHostiles();
-        if(roomAnalyzer.result.hostiles.creeps.count > 0){
-            console.log(creep,"Found hostiles");
-        }else{
-            console.log(creep,"Found NO hostiles");
-        }
-
-
-        var targets = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-            filter: function (creep) {
-                return creep.owner.username != 'Source Keeper'
-            }
-        });
-        if (!targets) {
-            targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                filter: function (s) {
-                    return s.structureType != STRUCTURE_RAMPART;
-                }
-            });
-        }
-        if (!targets) {
-            targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
-        }
-
-        if (targets) {
-            if (creep.pos.isNearTo(targets)) {
-                creep.attack(targets);
+        if (roomAnalyzer.result.hostiles.creeps.count > 0) {
+            console.log(creep, "Found hostiles");
+            var target;
+            if (roomAnalyzer.result.hostiles.creeps.attackers.length > 0) {
+                target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.creeps.attackers);
             }
             else {
-                creep.moveTo(targets);
+                target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.creeps.all);
             }
+
+            console.log(creep, "Attacking "+target);
+            if (creep.pos.isNearTo(target)) {
+                creep.attack(target);
+            }
+            else {
+                creep.moveTo(target);
+            }
+        } else {
+            console.log(creep, "Found NO hostiles");
         }
+
+        /*
+         var targets = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+         filter: function (creep) {
+         return creep.owner.username != 'Source Keeper'
+         }
+         });
+         if (!targets) {
+         targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+         filter: function (s) {
+         return s.structureType != STRUCTURE_RAMPART;
+         }
+         });
+         }
+         if (!targets) {
+         targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
+         }
+
+         if (targets) {
+         if (creep.pos.isNearTo(targets)) {
+         creep.attack(targets);
+         }
+         else {
+         creep.moveTo(targets);
+         }
+         }
+         */
     }
 }
 
