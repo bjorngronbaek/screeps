@@ -29,7 +29,7 @@ module.exports = function (creep) {
         }
     }
 
-    var source = creep.pos.findClosest(FIND_SOURCES);
+    var source = creep.pos.findClosestByPath(FIND_SOURCES);
     moveToTargetByPath(source, 1);
 
     if (creep.carry.energy > creep.carryCapacity / 2) {

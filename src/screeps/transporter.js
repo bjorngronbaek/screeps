@@ -26,7 +26,7 @@ module.exports = function(creep){
  
  function setStructure(){
  if(roomAnalyzer.emptyExtensionCount > 0 || roomAnalyzer.emptySpawnCount > 0){
- var structure = creep.pos.findClosest(FIND_MY_STRUCTURES,{filter: function(s){
+ var structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,{filter: function(s){
  if(s.energy < s.energyCapacity){
  return true;
  }

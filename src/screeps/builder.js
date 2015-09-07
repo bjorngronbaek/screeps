@@ -27,7 +27,7 @@
  }
  else{
  /* search for structures */
- var structure = creep.pos.findClosest(FIND_MY_STRUCTURES,{filter: function(s){
+ var structure = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,{filter: function(s){
  if(s.energy && s.energy > 0){
  return true;
  }
@@ -56,7 +56,7 @@
  creep.memory.siteId = spawn2con.id;
  }
  else if(roomAnalyzer.constructionSiteCount > 0){ 
- var site = creep.pos.findClosest(FIND_CONSTRUCTION_SITES);
+ var site = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
  if(site) creep.memory.siteId = site.id;
  }
  else if(roomAnalyzer.repairSiteCount){
@@ -66,7 +66,7 @@
  }
  }
  else{
- var site = creep.pos.findClosest(FIND_MY_STRUCTURES);
+ var site = creep.pos.findClosestByPath(FIND_MY_STRUCTURES);
  creep.memory.siteId = site.id;
  }
  }
@@ -77,7 +77,7 @@
  if(flag){
  if(creep.memory.path === undefined){
  var exitDir = creep.room.findExitTo(flag.room);
- var exit = creep.pos.findClosest(exitDir);
+ var exit = creep.pos.findClosestByPath(exitDir);
  creep.memory.path = creep.pos.findPathTo(exit)
  }
  else{

@@ -12,7 +12,7 @@ def username = props.username;
 def password = props.password;
 resourceAsStream.close()
 
-def data = [branch  : "master", modules : new HashMap<String,String>()]
+def data = [branch  : "test1", modules : new HashMap<String,String>()]
 
 def list = []
 def dir = new File("../screeps")
@@ -36,5 +36,6 @@ http.request( POST, JSON ) { req ->
 
     response.success = { resp, json ->
         println "success ${resp.statusLine}"
+        println "response was ${json}"
     }
 }

@@ -24,7 +24,7 @@ module.exports = function (creep) {
         if (flag) {
             if (creep.memory.path === undefined || !creep.memory.path.length) {
                 var exitDir = creep.room.findExitTo(flag.room);
-                var exit = creep.pos.findClosest(exitDir);
+                var exit = creep.pos.findClosestByPath(exitDir);
                 if (exit) {
                     var path = creep.pos.findPathTo(exit, {
                         maxOps: 1000,
@@ -61,20 +61,20 @@ module.exports = function (creep) {
         }
 
 
-        var targets = creep.pos.findClosest(FIND_HOSTILE_CREEPS, {
+        var targets = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
             filter: function (creep) {
                 return creep.owner.username != 'Source Keeper'
             }
         });
         if (!targets) {
-            targets = creep.pos.findClosest(FIND_HOSTILE_STRUCTURES, {
+            targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: function (s) {
                     return s.structureType != STRUCTURE_RAMPART;
                 }
             });
         }
         if (!targets) {
-            targets = creep.pos.findClosest(FIND_HOSTILE_STRUCTURES);
+            targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
         }
 
         if (targets) {

@@ -26,7 +26,7 @@
  }
  }
  else if(creep.carry.energy == 0 && creep.room.energyAvailable > 200){
- var s = creep.pos.findClosest(FIND_MY_STRUCTURES,{filter: function(s){
+ var s = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,{filter: function(s){
  if(s.energy && s.energy > 0){
  return true;
  }
