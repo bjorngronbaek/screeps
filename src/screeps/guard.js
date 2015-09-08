@@ -18,10 +18,10 @@ module.exports = function (creep) {
         }
     }
 
-    if (creep.memory.flag != null && creep.memory.flag != undefined && creep.memory.flag != -1) {
+    function moveToFlag(creep) {
         var flag = Game.getObjectById(creep.memory.flag);
-        log(creep, 'moving to ' + flag + ' from ' + creep.room);
         if (flag) {
+            log(creep, 'moving to ' + flag + ' from ' + creep.room);
             if (creep.memory.path === undefined || !creep.memory.path.length) {
                 var exitDir = creep.room.findExitTo(flag.room);
                 var exit = creep.pos.findClosestByPath(exitDir);
@@ -52,10 +52,41 @@ module.exports = function (creep) {
             }
         }
     }
-    else {
+
+    function moveByMemoryPath(creep) {
+        var target = Game.getObjectById(creep.memory.targetId);
+        if(!creep.memory.path || creep.pos.inRangeTo(target.pos,4)){
+            var path = creep.pos.findPathTo(target);
+            if(path.length){
+                creep.memory.path = path;
+            }
+        }
+        if (creep.fatigue === 0 && creep.memory.path.length) {
+            var result = creep.move(creep.memory.path[0]);
+            if (result === Game.OK) {
+                creep.memory.path.shift();
+            }
+        }
+        //reset path
+        if (!creep.memory.path.length) {
+            creep.memory.path = null;
+        }
+    }
+
+    function isTargetInRange(creep) {
+        var target = Game.getObjectById(creep.memory.targetId);
+        return target ? creep.isNearTo(target) : false;
+    }
+
+    function isTargetSet(creep) {
+        var target = Game.getObjectById(creep.memory.targetId);
+        return target ? true : false;
+    }
+
+    function setTarget(creep) {
         roomAnalyzer.analyzeHostiles();
         if (roomAnalyzer.result.hostiles.creeps.count > 0) {
-            console.log(creep, "Found hostiles");
+            log(creep, "Found hostiles");
             var target;
             if (roomAnalyzer.result.hostiles.creeps.attackers.length > 0) {
                 target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.creeps.attackers);
@@ -63,16 +94,28 @@ module.exports = function (creep) {
             else {
                 target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.creeps.all);
             }
-
-            console.log(creep, "Attacking "+target);
-            if (creep.pos.isNearTo(target)) {
-                creep.attack(target);
-            }
-            else {
-                creep.moveTo(target);
-            }
+            creep.memory.targetId = target.id;
         } else {
-            console.log(creep, "Found NO hostiles");
+            log(creep, "Found NO hostiles");
+        }
+    }
+
+    if (creep.memory.flag != null && creep.memory.flag != undefined && creep.memory.flag != -1) {
+        moveToFlag(creep);
+    }
+    else {
+        if(!isTargetSet(creep)){
+            setTarget(creep);
+        }
+        else if(isTargetInRange()){
+            //attack the target
+            var target = Game.getObjectById(creep.memory.targetId);
+            creep.attack(target)
+            creep.rangedAttack(target)
+            creep.rangedMassAttack()
+        }
+        else{
+            moveByMemoryPath();
         }
 
         /*
