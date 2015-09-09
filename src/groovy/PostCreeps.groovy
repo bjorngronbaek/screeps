@@ -4,6 +4,9 @@ import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.Method.POST
 import static groovyx.net.http.ContentType.JSON
 
+def defaultBranch = "test1";
+def targetBranch = args.length > 0 ? args[0] : defaultBranch
+println "Posting to branch ${targetBranch}"
 
 def props = new Properties()
 def resourceAsStream = getClass().getClassLoader().getResourceAsStream("screeps.properties")
@@ -12,7 +15,7 @@ def username = props.username;
 def password = props.password;
 resourceAsStream.close()
 
-def data = [branch  : "test1", modules : new HashMap<String,String>()]
+def data = [branch  : targetBranch, modules : new HashMap<String,String>()]
 
 def list = []
 def dir = new File("../screeps")
