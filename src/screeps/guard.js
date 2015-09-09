@@ -54,28 +54,34 @@ module.exports = function (creep) {
     }
 
     function moveByMemoryPath(creep) {
+        log(creep,"moving by path")
         var target = Game.getObjectById(creep.memory.targetId);
         if(!creep.memory.path || creep.pos.inRangeTo(target.pos,4)){
+            log(creep,"calculating path")
             var path = creep.pos.findPathTo(target);
             if(path.length){
                 creep.memory.path = path;
             }
         }
         if (creep.fatigue === 0 && creep.memory.path.length) {
-            var result = creep.move(creep.memory.path[0]);
-            if (result === Game.OK) {
+            var result = creep.move(creep.memory.path[0].direction);
+            log(creep,"moved="+result)
+            if (result === OK) {
+                log(creep,"shifting")
                 creep.memory.path.shift();
             }
         }
+
         //reset path
         if (!creep.memory.path.length) {
+            log(creep,"resetting path")
             creep.memory.path = null;
         }
     }
 
     function isTargetInRange(creep) {
         var target = Game.getObjectById(creep.memory.targetId);
-        return target ? creep.isNearTo(target) : false;
+        return target ? creep.pos.isNearTo(target) : false;
     }
 
     function isTargetSet(creep) {
@@ -107,7 +113,7 @@ module.exports = function (creep) {
         if(!isTargetSet(creep)){
             setTarget(creep);
         }
-        else if(isTargetInRange()){
+        else if(isTargetInRange(creep)){
             //attack the target
             var target = Game.getObjectById(creep.memory.targetId);
             creep.attack(target)
@@ -115,7 +121,7 @@ module.exports = function (creep) {
             creep.rangedMassAttack()
         }
         else{
-            moveByMemoryPath();
+            moveByMemoryPath(creep);
         }
 
         /*

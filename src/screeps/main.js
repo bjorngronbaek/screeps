@@ -1,3 +1,4 @@
+/* $date: $ */
 /* test1 1*/
 var harvester = require('harvester');
 var builder = require('builder');

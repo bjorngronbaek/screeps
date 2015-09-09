@@ -23,6 +23,9 @@ dir.eachFile (FileType.FILES) { file ->
 list.each {
     def file = new File("${it}")
     String fileContents = file.text
+    if("main.js".equals(file.name)){
+        fileContents = fileContents.replaceFirst(/\$.*\$/,new Date().toString())
+    }
     data.modules.put(file.name.lastIndexOf('.').with {it != -1 ? file.name[0..<it] : file.name},fileContents)
 }
 
