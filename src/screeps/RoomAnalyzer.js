@@ -14,6 +14,7 @@ module.exports = (function () {
         this.room = Game.rooms[roomName];
         this.analyzed = 0;
         this.isAnalyzedHostiles = false;
+        this.isAnalyzedWalls = false;
 
         /* creep types */
         this.workerCount = 0;
@@ -40,35 +41,65 @@ module.exports = (function () {
 
         this.storageId;
 
-        this.result =  {
-                hostiles : {
-                    creeps : {
-                        attackers : [],
-                        all : [],
-                        count : 0
-                    },
-                    structures : {
-                        ramparts : [],
-                        walls : [],
-                        others : [],
-                        count : 0
-                    }
+        this.result = {
+            hostiles: {
+                creeps: {
+                    attackers: [],
+                    all: [],
+                    count: 0
+                },
+                structures: {
+                    notRamparts: [],
+                    all: [],
+                    count: 0
                 }
-            };
+            },
+            structures: {
+                all: []
+            }
+        };
     }
 
-    RoomAnalyzer.prototype.analyzeHostiles = function analyzeHostiles(){
-        if(!this.isAnalyzedHostiles){
+    RoomAnalyzer.prototype.analyzeHostiles = function analyzeHostiles() {
+        if (!this.isAnalyzedHostiles) {
             this.result.hostiles.creeps.attackers = this.room.find(FIND_HOSTILE_CREEPS,
-                {filter : function(c){
-                    return c.getActiveBodyparts(ATTACK) != 0 || c.getActiveBodyparts(RANGED_ATTACK) != 0;
-                }}
+                {
+                    filter: function (c) {
+                        return c.getActiveBodyparts(ATTACK) != 0 || c.getActiveBodyparts(RANGED_ATTACK) != 0;
+                    }
+                }
             );
             this.result.hostiles.creeps.all = this.room.find(FIND_HOSTILE_CREEPS);
             this.result.hostiles.creeps.count = this.result.hostiles.creeps.all.length;
+
+            this.result.hostiles.structures.all = this.room.find(FIND_HOSTILE_STRUCTURES);
+            this.result.hostiles.structures.notRamparts = this.room.find(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: function (s) {
+                        return s.structureType != STRUCTURE_RAMPART;
+                    }
+                }
+            );
+            this.result.hostiles.structures.count = this.result.hostiles.structures.all.length;
+
             this.isAnalyzedHostiles = true;
         }
     }
+
+    RoomAnalyzer.prototype.analyzeWalls = function analyzeWalls() {
+        if (!this.isAnalyzedWalls) {
+            this.result.structures.hostileWalls = this.room.find(FIND_STRUCTURES,
+                {
+                    filter: function (s) {
+                        return s.structureType == STRUCTURE_WALL
+                    }
+                }
+            );
+        }
+
+        this.isAnalyzedWalls = true;
+    }
+
 
     RoomAnalyzer.prototype.analyze = function analyze() {
         if (this.analyzed == 0) {

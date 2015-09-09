@@ -7,7 +7,7 @@
  */
 
 module.exports = function (creep) {
-    var DEBUG = 1;
+    var DEBUG = true;
 
     var RoomAnalyzer = require('RoomAnalyzer');
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
@@ -18,65 +18,41 @@ module.exports = function (creep) {
         }
     }
 
-    function moveToFlag(creep) {
-        var flag = Game.getObjectById(creep.memory.flag);
-        if (flag) {
-            log(creep, 'moving to ' + flag + ' from ' + creep.room);
-            if (creep.memory.path === undefined || !creep.memory.path.length) {
-                var exitDir = creep.room.findExitTo(flag.room);
-                var exit = creep.pos.findClosestByPath(exitDir);
-                if (exit) {
-                    var path = creep.pos.findPathTo(exit, {
-                        maxOps: 1000,
-                        ignoreDestructibleStructures: true,
-                        ignoreCreeps: true
-                    });
-                }
-                log(creep, 'Calculating path to ' + JSON.stringify(path));
-                creep.memory.path = path;
-            }
-            else {
-                //log(creep,'path is '+JSON.stringify(creep.memory.path));
-                var goto = creep.memory.path.shift();
-                log(creep, 'going to ' + JSON.stringify(goto))
-                var result = creep.move(goto.direction);
-                log(creep, result);
-            }
-            log(creep, 'moving to ' + flag.room + ' from ' + creep.room + ' exit=' + exit);
-
-            if (creep.room == flag.room) {
-                log(creep, 'is arrived');
-                creep.memory.flag = -1;
-                creep.memory.structureId = -1;
-                creep.memory.siteId = -1;
-            }
+    function moveToRoom(creep) {
+        if(creep.room.name != creep.memory.targetRoomName){
+            log(creep,"Not in target room")
+            var exitDir = creep.room.findExitTo(creep.memory.targetRoomName);
+            var exit = creep.pos.findClosestByPath(exitDir);
+            moveByMemoryPath(creep,exit.pos)
         }
     }
 
-    function moveByMemoryPath(creep) {
+    function moveByMemoryPath(creep,pos) {
         log(creep,"moving by path")
-        var target = Game.getObjectById(creep.memory.targetId);
-        if(!creep.memory.path || creep.pos.inRangeTo(target.pos,4)){
+        if(!creep.memory.path || !creep.memory.path.length || creep.memory.path == null || creep.pos.inRangeTo(pos,4)){
             log(creep,"calculating path")
-            var path = creep.pos.findPathTo(target);
+            var path = creep.pos.findPathTo(pos);
             if(path.length){
                 creep.memory.path = path;
             }
         }
-        if (creep.fatigue === 0 && creep.memory.path.length) {
+
+        if (creep.fatigue === 0 && creep.memory.path != null && creep.memory.path.length) {
             var result = creep.move(creep.memory.path[0].direction);
-            log(creep,"moved="+result)
+            //log(creep,"moved="+result)
             if (result === OK) {
-                log(creep,"shifting")
+                //log(creep,"shifting")
                 creep.memory.path.shift();
             }
         }
 
         //reset path
-        if (!creep.memory.path.length) {
+        if (creep.memory.path == null || !creep.memory.path.length) {
             log(creep,"resetting path")
-            creep.memory.path = null;
+            return false;
         }
+
+        return true;
     }
 
     function isTargetInRange(creep) {
@@ -89,8 +65,9 @@ module.exports = function (creep) {
         return target ? true : false;
     }
 
-    function setTarget(creep) {
+    function findTarget(creep) {
         roomAnalyzer.analyzeHostiles();
+        creep.memory.targetId = null;
         if (roomAnalyzer.result.hostiles.creeps.count > 0) {
             log(creep, "Found hostiles");
             var target;
@@ -100,18 +77,38 @@ module.exports = function (creep) {
             else {
                 target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.creeps.all);
             }
-            creep.memory.targetId = target.id;
+
+            if(target) {
+                creep.memory.targetId = target.id;
+            }
         } else {
-            log(creep, "Found NO hostiles");
+            //log(creep, "Found NO hostiles");
+        }
+
+        if (roomAnalyzer.result.hostiles.structures.count > 0  && !isTargetSet(creep)){
+            log(creep, "Found structures");
+            if (roomAnalyzer.result.hostiles.structures.notRamparts.length > 0) {
+                target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.structures.notRamparts);
+            }
+            else {
+                target = creep.pos.findClosestByPath(roomAnalyzer.result.hostiles.structures.all);
+            }
+
+            if(target) {
+                creep.memory.targetId = target.id;
+            }
+        }
+        else{
+            //log(creep, "Found NO structures");
         }
     }
 
     if (creep.memory.flag != null && creep.memory.flag != undefined && creep.memory.flag != -1) {
-        moveToFlag(creep);
+        moveToRoom(creep);
     }
     else {
         if(!isTargetSet(creep)){
-            setTarget(creep);
+            findTarget(creep);
         }
         else if(isTargetInRange(creep)){
             //attack the target
@@ -121,35 +118,13 @@ module.exports = function (creep) {
             creep.rangedMassAttack()
         }
         else{
-            moveByMemoryPath(creep);
+            var target = Game.getObjectById(creep.memory.targetId);
+            var result = moveByMemoryPath(creep,target.pos);
+            if(!result){
+                log(creep,"No path to target... recalculate! "+result)
+                findTarget(creep)
+            }
         }
-
-        /*
-         var targets = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-         filter: function (creep) {
-         return creep.owner.username != 'Source Keeper'
-         }
-         });
-         if (!targets) {
-         targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-         filter: function (s) {
-         return s.structureType != STRUCTURE_RAMPART;
-         }
-         });
-         }
-         if (!targets) {
-         targets = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
-         }
-
-         if (targets) {
-         if (creep.pos.isNearTo(targets)) {
-         creep.attack(targets);
-         }
-         else {
-         creep.moveTo(targets);
-         }
-         }
-         */
     }
 }
 
