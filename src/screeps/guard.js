@@ -19,20 +19,23 @@ module.exports = function (creep) {
     }
 
     function moveToRoom(creep) {
-        if(creep.room.name != creep.memory.targetRoomName){
-            log(creep,"Not in target room")
-            var exitDir = creep.room.findExitTo(creep.memory.targetRoomName);
-            var exit = creep.pos.findClosestByPath(exitDir);
-            moveByMemoryPath(creep,exit.pos)
+        var targetRoomPosition = creep.memory.targetRoomPosition;
+        if(targetRoomPosition && creep.pos != targetRoomPosition){
+            var result = creep.moveTo(targetRoomPosition);
+            log(creep,"Not in target room. Moved="+result)
+            return false;
+        }
+        else{
+            return true;
         }
     }
 
     function moveByMemoryPath(creep,pos) {
         log(creep,"moving by path")
-        if(!creep.memory.path || !creep.memory.path.length || creep.memory.path == null || creep.pos.inRangeTo(pos,4)){
-            log(creep,"calculating path")
-            var path = creep.pos.findPathTo(pos);
-            if(path.length){
+        if(pos && (!creep.memory.path || !creep.memory.path.length || creep.memory.path == null)){
+            log(creep,"calculating path to pos="+JSON.stringify(pos)+" from pos"+JSON.stringify(creep.pos))
+            var path = creep.pos.findPathTo(pos.x,pos.y);
+            if(path && path.length){
                 creep.memory.path = path;
             }
         }
@@ -47,7 +50,7 @@ module.exports = function (creep) {
         }
 
         //reset path
-        if (creep.memory.path == null || !creep.memory.path.length) {
+        if (!creep.memory.path || (creep.memory.path == null || !creep.memory.path.length  || creep.pos.inRangeTo(pos,4))) {
             log(creep,"resetting path")
             return false;
         }
@@ -80,6 +83,7 @@ module.exports = function (creep) {
 
             if(target) {
                 creep.memory.targetId = target.id;
+                creep.memory.targetPos = target.pos;
             }
         } else {
             //log(creep, "Found NO hostiles");
@@ -96,6 +100,7 @@ module.exports = function (creep) {
 
             if(target) {
                 creep.memory.targetId = target.id;
+                creep.memory.targetPos = target.pos;
             }
         }
         else{
@@ -103,27 +108,23 @@ module.exports = function (creep) {
         }
     }
 
-    if (creep.memory.flag != null && creep.memory.flag != undefined && creep.memory.flag != -1) {
-        moveToRoom(creep);
-    }
-    else {
+    if(moveToRoom(creep)){
         if(!isTargetSet(creep)){
             findTarget(creep);
         }
-        else if(isTargetInRange(creep)){
+
+        if(isTargetInRange(creep)){
             //attack the target
             var target = Game.getObjectById(creep.memory.targetId);
             creep.attack(target)
             creep.rangedAttack(target)
             creep.rangedMassAttack()
         }
-        else{
-            var target = Game.getObjectById(creep.memory.targetId);
-            var result = moveByMemoryPath(creep,target.pos);
-            if(!result){
-                log(creep,"No path to target... recalculate! "+result)
-                findTarget(creep)
-            }
+
+        var result = moveByMemoryPath(creep,creep.memory.targetPos);
+        if(!result){
+            log(creep,"No path to target... recalculate! "+result)
+            findTarget(creep)
         }
     }
 }
