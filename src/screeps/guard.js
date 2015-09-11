@@ -21,8 +21,9 @@ module.exports = function (creep) {
     function moveToRoom(creep) {
         var targetRoomPosition = creep.memory.targetRoomPosition;
         if(targetRoomPosition && creep.pos != targetRoomPosition){
+            //var result = creep.moveTo(targetRoomPosition.x,targetRoomPosition.y);
             var result = creep.moveTo(targetRoomPosition);
-            log(creep,"Not in target room. Moved="+result)
+            log(creep,"Not in target room. curPos="+JSON.stringify(creep.pos)+", targetPos="+JSON.stringify(targetRoomPosition)+" Moved="+result)
             return false;
         }
         else{
