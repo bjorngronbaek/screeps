@@ -20,8 +20,8 @@ module.exports = function (creep) {
 
     function moveToRoom(creep) {
         var targetRoomPosition = creep.memory.targetRoomPosition;
-        if (creep.memory.targetRoomPosition != null && !creep.pos.isEqualTo(targetRoomPosition.pos.x,targetRoomPosition.pos.y) && targetRoomPosition.pos.roomName != creep.pos.roomName) {
-            log(creep,"We have to move!")
+        if (creep.memory.targetRoomPosition && creep.memory.targetRoomPosition != null && !creep.pos.isEqualTo(targetRoomPosition.pos.x, targetRoomPosition.pos.y) && targetRoomPosition.pos.roomName != creep.pos.roomName) {
+            log(creep, "We have to move!")
             //are we in the right room?
             if (targetRoomPosition.pos.roomName != creep.pos.roomName) {
                 log(creep, "not the right room")
@@ -31,19 +31,22 @@ module.exports = function (creep) {
                     creep.memory.exit = creep.pos.findClosestByPath(exitDir);
                     creep.memory.exitCalcCounter = 0;
                 }
-                log(creep, "Using exit " + JSON.stringify(creep.memory.exit))
-                var r = creep.moveTo(creep.memory.exit.x,creep.memory.exit.y);
-                log(creep,"Moved "+r)
-                creep.memory.exitCalcCounter++;
+
+                if(creep.memory.exit && creep.memory.exit != null) {
+                    log(creep, "Using exit " + JSON.stringify(creep.memory.exit))
+                    var r = creep.moveTo(creep.memory.exit.x, creep.memory.exit.y);
+                    log(creep, "Moved " + r)
+                    creep.memory.exitCalcCounter++;
+                }
             }
             else {
-                var result = creep.moveTo(targetRoomPosition.pos.x,targetRoomPosition.pos.y);
+                var result = creep.moveTo(targetRoomPosition.pos.x, targetRoomPosition.pos.y);
                 log(creep, "In target room. curPos=" + JSON.stringify(creep.pos) + ", targetPos=" + JSON.stringify(targetRoomPosition) + " Moved=" + result)
             }
             return false;
         }
         else {
-            log(creep,"is in target room!")
+            log(creep, "is in target room!")
             creep.memory.targetRoomPosition = null;
             return true;
         }
@@ -127,24 +130,30 @@ module.exports = function (creep) {
         }
     }
 
-    if (moveToRoom(creep)) {
+    if(moveToRoom(creep)) {
+
         if (!isTargetSet(creep)) {
             findTarget(creep);
         }
 
-        if (isTargetInRange(creep)) {
-            //attack the target
-            var target = Game.getObjectById(creep.memory.targetId);
-            creep.attack(target)
-            creep.rangedAttack(target)
-            creep.rangedMassAttack()
-        }
+        if (isTargetSet(creep)) {
+            if (isTargetInRange(creep)) {
+                //attack the target
+                var target = Game.getObjectById(creep.memory.targetId);
+                creep.attack(target)
+                creep.rangedAttack(target)
+                creep.rangedMassAttack()
+            }
 
-        var result = moveByMemoryPath(creep, creep.memory.targetPos);
-        if (!result) {
-            log(creep, "No path to target... recalculate! " + result)
-            findTarget(creep)
+            var result = moveByMemoryPath(creep, creep.memory.targetPos);
+            if (!result) {
+                log(creep, "No path to target... recalculate! " + result)
+                findTarget(creep)
+            }
         }
     }
+
+
+
 }
 

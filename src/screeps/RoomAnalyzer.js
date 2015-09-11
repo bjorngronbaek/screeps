@@ -76,7 +76,7 @@ module.exports = (function () {
             this.result.hostiles.structures.notRamparts = this.room.find(FIND_HOSTILE_STRUCTURES,
                 {
                     filter: function (s) {
-                        return s.structureType != STRUCTURE_RAMPART;
+                        return s.structureType != STRUCTURE_RAMPART && s.tructureType != STRUCTURE_CONTROLLER;
                     }
                 }
             );
