@@ -1,0 +1,1 @@
+Game.spawns.Spawn1.createCreep([TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, MOVE,MOVE,MOVE,MOVE,MOVE, MOVE, MOVE, MOVE],null,{role:"guard", targetRoomPosition:Game.flags.FlagE8N5})
