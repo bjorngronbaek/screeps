@@ -47,4 +47,3 @@
  creep.upgradeController(creep.room.controller);
  }
  };
-
