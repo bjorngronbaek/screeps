@@ -8,8 +8,8 @@ def defaultBranch = "test1";
 def targetBranch = args.length > 0 ? args[0] : defaultBranch
 println "Posting to branch ${targetBranch}"
 
-def props = new Properties()
-def resourceAsStream = getClass().getClassLoader().getResourceAsStream("screeps.properties")
+Properties props = new Properties()
+InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("screeps.properties")
 props.load(resourceAsStream)
 def username = props.username;
 def password = props.password;

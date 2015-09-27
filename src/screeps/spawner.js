@@ -30,7 +30,7 @@ module.exports = function (spawn) {
     else if ((analyzer.constructionSiteCount > 0 || analyzer.repairSiteCount > 0) && analyzer.builderCount < 2 && analyzer.workerCount > 1) {
         factory.spawnBuilder(spawn);
     }
-    else if (analyzer.upgraderCount < 2 && analyzer.workerCount > 1) {
+    else if (analyzer.upgraderCount < 1 && analyzer.workerCount > 1) {
         if (analyzer.constructionSiteCount > 2 && analyzer.upgraderCount > 0) {
             //build nothing
         }

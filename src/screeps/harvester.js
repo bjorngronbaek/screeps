@@ -10,7 +10,6 @@ module.exports = function (creep) {
         //console.log('[HARVESTER] '+creep+': '+message);
     }
 
-
     function moveToTargetByPath(target, targetDistance) {
         if (creep.memory.path && creep.memory.path.length) {
             var path = creep.memory.path;
