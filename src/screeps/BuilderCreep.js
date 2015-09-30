@@ -4,7 +4,7 @@ var BuilderCreep = function(creep){
     BaseCreep.apply(this,arguments);
 };
 
-BuilderCreep.prototype = BaseCreep.prototype;
+BuilderCreep.prototype = Object.create(BaseCreep.propertype);
 BuilderCreep.prototype.constructor = BuilderCreep;
 
 module.exports = BuilderCreep;

@@ -1,8 +1,8 @@
 /**
- * Created by Bjørn on 27-09-2015.
+ * Created by Bjï¿½rn on 27-09-2015.
  */
 
-var BaseCreep = function(creep){
+var BaseCreep = function(creep) {
     this.creep = creep;
     this.memoryProp = creep.memory;
     this.DEBUG = true;
@@ -12,7 +12,7 @@ module.exports = BaseCreep;
 
 BaseCreep.prototype.log = function(message) {
     if (this.DEBUG) {
-        console.log('['+this.memoryProp.role+'] ' + this.creep.name + ': ' + message);
+        console.log('[' + this.memoryProp.role + '] ' + this.creep.name + ': ' + message);
     }
 };
 
@@ -20,7 +20,7 @@ BaseCreep.prototype.moveToTarget = function() {
     var targetRoomPosition = this.creep.memory.targetRoomPosition;
     if (targetRoomPosition && targetRoomPosition != null && !creep.pos.isEqualTo(targetRoomPosition.pos.x, targetRoomPosition.pos.y) && targetRoomPosition.pos.roomName != creep.pos.roomName) {
         log(creep, "We have to move!")
-        //are we in the right room?
+            //are we in the right room?
         if (targetRoomPosition.pos.roomName != creep.pos.roomName) {
             log(creep, "not the right room")
             if (!creep.memory.exit || !creep.memory.exitCalcCounter || creep.memory.exitCalcCounter > 10) {
@@ -30,7 +30,7 @@ BaseCreep.prototype.moveToTarget = function() {
                 creep.memory.exitCalcCounter = 0;
             }
 
-            if(creep.memory.exit && creep.memory.exit != null) {
+            if (creep.memory.exit && creep.memory.exit != null) {
                 log(creep, "Using exit " + JSON.stringify(creep.memory.exit))
                 var r = creep.moveTo(creep.memory.exit.x, creep.memory.exit.y);
                 log(creep, "Moved " + r)
