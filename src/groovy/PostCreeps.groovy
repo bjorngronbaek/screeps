@@ -1,5 +1,8 @@
 import groovy.io.FileType
 import groovy.json.JsonBuilder
+@Grapes(
+        @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7.1')
+)
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.Method.POST
 import static groovyx.net.http.ContentType.JSON

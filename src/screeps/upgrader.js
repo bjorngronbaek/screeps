@@ -7,7 +7,6 @@
  */
 
 module.exports = function (creep) {
-    sdad
     var RoomAnalyzer = require('RoomAnalyzer');
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
     var DEBUG = 0;
