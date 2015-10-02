@@ -15,6 +15,7 @@ module.exports = (function () {
         this.analyzed = 0;
         this.isAnalyzedHostiles = false;
         this.isAnalyzedWalls = false;
+        this.isAnalyzedControllers = false;
 
         /* creep types */
         this.workerCount = 0;
@@ -56,6 +57,9 @@ module.exports = (function () {
             },
             structures: {
                 all: []
+            },
+            controllers: {
+                
             }
         };
     }
@@ -83,6 +87,13 @@ module.exports = (function () {
             this.result.hostiles.structures.count = this.result.hostiles.structures.all.length;
 
             this.isAnalyzedHostiles = true;
+        }
+    }
+    
+    RoomAnalyzer.prototype.analyzeControllers = function analyzeControllers() {
+        if(!this.isAnalyzedControllers){
+            
+            this.isAnalyzedControllers = true;
         }
     }
 

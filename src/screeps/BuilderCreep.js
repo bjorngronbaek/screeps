@@ -1,4 +1,4 @@
-var BaseCreep = require("BaseCreep")
+var BaseCreep = require("BaseCreep");
 
 var BuilderCreep = function(creep){
     BaseCreep.apply(this,arguments);
@@ -52,7 +52,7 @@ BuilderCreep.prototype.findSite = function () {
             site = roomAnalyzer.repairSites.shift();
         }
         else {
-            var site = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES);
+            site = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES);
         }
 
         if (site){

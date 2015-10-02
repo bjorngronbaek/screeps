@@ -6,38 +6,12 @@
  * var mod = require('builder'); // -> 'a thing'
  */
 
-module.exports = function (creep) {
+module.exports = function(creep) {
 
-    function moveToFlag() {
-        var flag = Game.getObjectById(creep.memory.flag);
-        if (flag) {
-            if (creep.memory.path === undefined) {
-                var exitDir = creep.room.findExitTo(flag.room);
-                var exit = creep.pos.findClosestByPath(exitDir);
-                creep.memory.path = creep.pos.findPathTo(exit)
-            }
-            else {
-                creep.move(creep.memory.path.shift());
-            }
-            //creep.moveTo(exit);
-            log(creep, 'moving to ' + flag.room + ' from ' + creep.room);
-
-            if (creep.room == flag.room) {
-                log(creep, 'is arrived');
-                creep.memory.flag = -1;
-            }
-        }
-    }
-
-    var Builder = require("BuilderCreep");
-    var builder = new Builder(creep);
-    if (creep.memory.flag != undefined && creep.memory.flag != -1) {
-        moveToFlag();
-    }
-    else {
+    function operate(creep, builder) {
         if (creep.carry.energy == 0) {
             builder.log('finding energy')
-            /* get rid of site and find structure for more energy */
+                /* get rid of site and find structure for more energy */
             creep.memory.siteId = -1;
             builder.findEnergy();
 
@@ -68,7 +42,7 @@ module.exports = function (creep) {
                 if (creep.memory.path === undefined || creep.memory.path == -1 || creep.memory.path.lenght == 0) {
                     creep.memory.path = creep.pos.findPathTo(site);
                 }
-                log(creep, ' moving to site ' + site + ' by path :' + JSON.stringify(creep.memory.path))
+                builder.log(creep, ' moving to site ' + site + ' by path :' + JSON.stringify(creep.memory.path))
                 creep.pos.createConstructionSite(STRUCTURE_ROAD);
                 if (creep.pos.isNearTo(site)) {
                     creep.build(site);
@@ -88,5 +62,23 @@ module.exports = function (creep) {
             }
         }
     }
-};
 
+    var Builder = require("BuilderCreep");
+    var builder = new Builder(creep);
+
+    if (creep.room.controller.my === true) {
+        builder.log("it my room!")
+        //operate(creep,builder);
+    }
+    else {
+        builder.log("Not my room!")
+        if (!creep.pos.isNearTo(creep.room.controller)) {
+            creep.memory.targetRoomPosition = creep.room.controller;
+            builder.moveToTarget();
+        }
+        else {
+            creep.claimController(creep.room.controller);
+        }
+    }
+
+};
