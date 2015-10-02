@@ -4,7 +4,7 @@ var BuilderCreep = function(creep){
     BaseCreep.apply(this,arguments);
 };
 
-BuilderCreep.prototype = Object.create(BaseCreep.propertype);
+BuilderCreep.prototype = Object.create(BaseCreep.prototype);
 BuilderCreep.prototype.constructor = BuilderCreep;
 
 module.exports = BuilderCreep;
@@ -42,7 +42,7 @@ BuilderCreep.prototype.findSite = function () {
     var RoomAnalyzer = require('RoomAnalyzer');
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(this.creep.room);
     if (!this.memoryProp.siteId) {
-        log('finding site. c=' + roomAnalyzer.constructionSiteCount + ' r=' + roomAnalyzer.repairSiteCount)
+        this.log('finding site. c=' + roomAnalyzer.constructionSiteCount + ' r=' + roomAnalyzer.repairSiteCount)
 
         var site;
         if (roomAnalyzer.constructionSiteCount > 0) {
@@ -52,7 +52,7 @@ BuilderCreep.prototype.findSite = function () {
             site = roomAnalyzer.repairSites.shift();
         }
         else {
-            var site = creep.pos.findClosestByPath(FIND_MY_STRUCTURES);
+            var site = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES);
         }
 
         if (site){
