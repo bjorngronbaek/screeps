@@ -18,7 +18,7 @@ module.exports = function (spawn) {
         expectedWorkerCount = 3;
     }
     if (analyzer.hostileCount != 0 && analyzer.hostileCount > analyzer.guardCount && analyzer.workerCount > 0) {
-        factory.spawnGuard(spawn);
+        factory.spawnDefender(spawn);
     }
     else if (analyzer.transporterCount < expectedWorkerCount) {
         factory.spawnTransporter(spawn);

@@ -92,6 +92,16 @@ module.exports = (function () {
          }
          */
     }
+    
+    CreepFactory.prototype.spawnDefender = function spawnDefender(spawn, flagid) {
+        var est = [MOVE, RANGED_ATTACK];
+        var mt = [MOVE, RANGED_ATTACK, RANGED_ATTACK, MOVE];
+        var bt = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE];
+        var ebt = [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE,MOVE];
+        if (spawn.canCreateCreep(bt) == 0) {
+            return spawn.createCreep(bt, null, {role: 'guard', flag: flagid});
+        }
+    }
 
     CreepFactory.prototype.spawnScout = function spawnScout(spawn, flagid) {
         var est = [MOVE];

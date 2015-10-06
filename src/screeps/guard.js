@@ -140,15 +140,15 @@ module.exports = function (creep) {
             if (isTargetInRange(creep)) {
                 //attack the target
                 var target = Game.getObjectById(creep.memory.targetId);
-                creep.attack(target)
-                creep.rangedAttack(target)
-                creep.rangedMassAttack()
+                creep.attack(target);
+                creep.rangedAttack(target);
+                creep.rangedMassAttack();
             }
 
             var result = moveByMemoryPath(creep, creep.memory.targetPos);
             if (!result) {
-                log(creep, "No path to target... recalculate! " + result)
-                findTarget(creep)
+                log(creep, "No path to target... recalculate! " + result);
+                findTarget(creep);
             }
         }
     }
