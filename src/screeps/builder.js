@@ -35,10 +35,6 @@ module.exports = function(creep) {
             builder.findSite();
             var site = Game.getObjectById(creep.memory.siteId);
             if (site) {
-                if (creep.memory.path === undefined || creep.memory.path == null || creep.memory.path.length == 0) {
-                    creep.memory.path = creep.pos.findPathTo(site);
-                }
-                builder.log(creep, ' moving to site ' + site + ' by path :' + JSON.stringify(creep.memory.path))
                 creep.pos.createConstructionSite(STRUCTURE_ROAD);
                 if (creep.pos.isNearTo(site)) {
                     creep.build(site);
@@ -46,15 +42,12 @@ module.exports = function(creep) {
                     creep.transferEnergy(site);
                 }
                 else {
-                    creep.moveTo(site);
-                    //creep.moveByPath(creep.memory.path);
-                    //creep.memory.path.shift();
+                    builder.moveByMemoryPath(site.pos);
                 }
             }
             else {
-                console.log('NO site ' + creep);
+                builder.log('NO site');
                 creep.memory.siteId = null;
-                creep.memory.path = null;
             }
         }
     }
