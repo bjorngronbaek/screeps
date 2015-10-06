@@ -36,7 +36,7 @@ BuilderCreep.prototype.findEnergy = function() {
         }
     }
 };
-
+    
 BuilderCreep.prototype.findSite = function () {
     var RoomAnalyzer = require('RoomAnalyzer');
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(this.creep.room);
@@ -44,18 +44,18 @@ BuilderCreep.prototype.findSite = function () {
         this.log('finding site. c=' + roomAnalyzer.constructionSiteCount + ' r=' + roomAnalyzer.repairSiteCount)
 
         var site;
-        if (roomAnalyzer.constructionSiteCount > 0) {
-            site = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-        }
-        else if (roomAnalyzer.repairSiteCount) {
+        if (roomAnalyzer.repairSiteCount) {
             site = roomAnalyzer.repairSites.shift();
+        }
+        else if (roomAnalyzer.constructionSiteCount > 0) {
+            site = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
         }
         else {
             site = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES);
         }
 
         if (site){
-            this.log("Found site")
+            this.log("Found site");
             this.memoryProp.siteId = site.id;
         }
     }

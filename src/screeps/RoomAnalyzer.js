@@ -196,7 +196,7 @@ module.exports = (function () {
 
             var myStructures = this.repairSites = this.room.find(FIND_MY_STRUCTURES, {
                 filter: function (i) {
-                    return i.hits < i.hitsMax / 2 && i.hits < 3000000;
+                    return i.hits < i.hitsMax / 2 && i.hits < 1500000;
                 }
             });
             var myWalls = this.room.find(FIND_STRUCTURES, {

@@ -63,7 +63,7 @@ BaseCreep.prototype.moveByMemoryPath = function (pos) {
     }
 
     //reset path
-    if (!this.memoryProp.path || !this.memoryProp.path.length || this.creep.pos.inRangeTo(pos, 4)) {
+    if (!this.memoryProp.path || !this.memoryProp.path.length /*|| this.creep.pos.inRangeTo(pos, 4)*/) {
         this.log("Resetting path");
         return false;
     }

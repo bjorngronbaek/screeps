@@ -41,7 +41,12 @@ module.exports = function (creep) {
         }
     }
     else {
-        upgrader.moveByMemoryPath(creep.room.controller.pos);
-        creep.upgradeController(creep.room.controller);
+        if(creep.pos.isNearTo(creep.room.controller)){
+            creep.upgradeController(creep.room.controller);
+        }
+        else{
+            upgrader.moveByMemoryPath(creep.room.controller.pos);
+        }
+        
     }
 };
