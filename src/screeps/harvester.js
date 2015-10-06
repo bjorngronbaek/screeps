@@ -41,6 +41,7 @@ module.exports = function (creep) {
             creep.transferEnergy(transporters[0]);
         }
         else {
+            
             creep.harvest(source);
         }
     }

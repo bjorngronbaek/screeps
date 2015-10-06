@@ -201,7 +201,7 @@ module.exports = (function () {
             });
             var myWalls = this.room.find(FIND_STRUCTURES, {
                 filter: function (struct) {
-                    return struct.structureType == STRUCTURE_WALL && struct.hits < 1500000;
+                    return struct.structureType == STRUCTURE_WALL && struct.hits < 1500000 && struct.hits < struct.hitsMax;
                 }
             });
             this.repairSites = myStructures.concat(myWalls);

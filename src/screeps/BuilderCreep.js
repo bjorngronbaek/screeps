@@ -56,7 +56,11 @@ BuilderCreep.prototype.findSite = function () {
         }
 
         if (site){
+            this.log("Found site")
             this.memoryProp.siteId = site.id;
         }
+    }
+    else{
+        this.log("Already have a site");
     }
 }

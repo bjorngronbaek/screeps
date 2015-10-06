@@ -10,7 +10,7 @@ module.exports = function(creep) {
 
     function operate(creep, builder) {
         if (creep.carry.energy == 0) {
-            builder.log('finding energy')
+            builder.log('finding energy');
                 /* get rid of site and find structure for more energy */
             creep.memory.siteId = -1;
             builder.findEnergy();
@@ -39,7 +39,7 @@ module.exports = function(creep) {
             builder.findSite();
             var site = Game.getObjectById(creep.memory.siteId);
             if (site) {
-                if (creep.memory.path === undefined || creep.memory.path == -1 || creep.memory.path.lenght == 0) {
+                if (creep.memory.path === undefined || creep.memory.path == null || creep.memory.path.length == 0) {
                     creep.memory.path = creep.pos.findPathTo(site);
                 }
                 builder.log(creep, ' moving to site ' + site + ' by path :' + JSON.stringify(creep.memory.path))
@@ -57,8 +57,8 @@ module.exports = function(creep) {
             }
             else {
                 console.log('NO site ' + creep);
-                creep.memory.siteId = -1;
-                creep.memory.path = -1;
+                creep.memory.siteId = null;
+                creep.memory.path = null;
             }
         }
     }
@@ -67,11 +67,11 @@ module.exports = function(creep) {
     var builder = new Builder(creep);
 
     if (creep.room.controller.my === true) {
-        builder.log("it my room!")
-        //operate(creep,builder);
+        builder.log("it's my room!");
+        operate(creep,builder);
     }
     else {
-        builder.log("Not my room!")
+        builder.log("Not my room!");
         if (!creep.pos.isNearTo(creep.room.controller)) {
             creep.memory.targetRoomPosition = creep.room.controller;
             builder.moveToTarget();

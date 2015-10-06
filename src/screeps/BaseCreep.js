@@ -44,3 +44,29 @@ BaseCreep.prototype.moveToTarget = function() {
         return false;
     }
 };
+
+BaseCreep.prototype.moveByMemoryPath = function (pos) {
+    this.log("Moving by path");
+    if (pos && (!this.memoryProp.path  || !this.memoryProp.path.length)) {
+        this.log("Calculating path to pos=" + JSON.stringify(pos) + " from pos" + JSON.stringify(this.creep.pos));
+        var path = this.creep.pos.findPathTo(pos.x, pos.y);
+        if (path && path.length) {
+            this.memoryProp.path = path;
+        }
+    }
+
+    if (this.creep.fatigue === 0 && this.memoryProp.path  && this.memoryProp.path.length) {
+        var result = this.creep.move(this.memoryProp.path[0].direction);
+        if (result === OK) {
+            this.memoryProp.path.shift();
+        }
+    }
+
+    //reset path
+    if (!this.memoryProp.path || !this.memoryProp.path.length || this.creep.pos.inRangeTo(pos, 4)) {
+        this.log("Resetting path");
+        return false;
+    }
+
+    return true;
+};
