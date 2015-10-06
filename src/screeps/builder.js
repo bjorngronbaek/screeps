@@ -18,23 +18,18 @@ module.exports = function(creep) {
 
             var structure = Game.getObjectById(creep.memory.structureId);
             if (structure) {
-                if (creep.memory.path === undefined || creep.memory.path == -1) {
-                    creep.memory.path = creep.pos.findPathTo(structure);
-                }
                 if (creep.pos.isNearTo(structure)) {
                     structure.transferEnergy(creep);
                 }
                 else {
-                    creep.moveTo(structure);
+                    builder.moveByMemoryPath(structure.pos)
+                    //creep.moveTo(structure);
                 }
                 if (structure.energy == 0) {
-                    creep.memory.structureId = -1;
-                    creep.memory.path = -1;
+                    creep.memory.structureId = null;
                 }
             }
-            else {
-                creep.memory.flag = Game.spawns.Spawn1;
-            }
+
         }
         else {
             builder.findSite();
