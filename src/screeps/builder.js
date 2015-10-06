@@ -11,7 +11,8 @@ module.exports = function(creep) {
     function operate(creep, builder) {
         if (creep.carry.energy == 0) {
             builder.log('finding energy');
-                /* get rid of site and find structure for more energy */
+            
+            /* get rid of site and find structure for more energy */
             creep.memory.siteId = -1;
             builder.findEnergy();
 
@@ -67,7 +68,6 @@ module.exports = function(creep) {
     var builder = new Builder(creep);
 
     if (creep.room.controller.my === true) {
-        builder.log("it's my room!");
         operate(creep,builder);
     }
     else {

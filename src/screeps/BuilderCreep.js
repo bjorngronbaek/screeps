@@ -33,10 +33,9 @@ BuilderCreep.prototype.findEnergy = function() {
             if (structure) {
                 this.memoryProp.structureId = structure.id;
             }
-
         }
     }
-}
+};
 
 BuilderCreep.prototype.findSite = function () {
     var RoomAnalyzer = require('RoomAnalyzer');
