@@ -2,6 +2,7 @@ var BaseCreep = require("BaseCreep");
 
 var BuilderCreep = function(creep){
     BaseCreep.apply(this,arguments);
+    this.DEBUG = false;
 };
 
 BuilderCreep.prototype = Object.create(BaseCreep.prototype);

@@ -45,15 +45,31 @@ TransporterCreep.prototype.setWorker = function() {
 TransporterCreep.prototype.findTaker = function() {
     var result = this.roomAnalyzer.analyzeEnergy();
     if(result.energy.takers.spawns.length > 0){
-        return this.creep.room.findClosestByPath(result.energy.takers.spawns);
+        return this.creep.pos.findClosestByPath(result.energy.takers.spawns);
     }
     if(result.energy.takers.extensions.length > 0){
-        return this.creep.room.findClosestByPath(result.energy.takers.extensions);
+        return this.creep.pos.findClosestByPath(result.energy.takers.extensions);
     }
     if(result.energy.takers.upgraders.length > 0){
-        return this.creep.room.findClosestByPath(result.energy.takers.upgraders);
+        return this.creep.pos.findClosestByPath(result.energy.takers.upgraders);
     }
     if(result.energy.takers.stores.length > 0){
-        return this.creep.room.findClosestByPath(result.energy.takers.stores);
+        return this.creep.pos.findClosestByPath(result.energy.takers.stores);
     }
 }
+
+TransporterCreep.prototype.findGiver = function() {
+    var result = this.roomAnalyzer.analyzeEnergy();
+    if(result.energy.takers.spawns.length > 0){
+        return this.creep.pos.findClosestByPath(result.energy.takers.spawns);
+    }
+    if(result.energy.takers.extensions.length > 0){
+        return this.creep.pos.findClosestByPath(result.energy.takers.extensions);
+    }
+    if(result.energy.takers.upgraders.length > 0){
+        return this.creep.pos.findClosestByPath(result.energy.takers.upgraders);
+    }
+    if(result.energy.takers.stores.length > 0){
+        return this.creep.pos.findClosestByPath(result.energy.takers.stores);
+    }
+};

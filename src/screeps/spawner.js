@@ -31,13 +31,12 @@ module.exports = function (spawn) {
         console.log("must build builder");
         factory.spawnBuilder(spawn);
     }
-    else if (analyzer.upgraderCount < 2 && analyzer.workerCount > 1) {
+    else if (analyzer.upgraderCount < 1 && analyzer.workerCount > 1) {
         console.log("must build upgrader");
         if (analyzer.constructionSiteCount > 5 && analyzer.upgraderCount > 1) {
             //build nothing
         }
         else {
-            
             factory.spawnUpgrader(spawn);
         }
     }

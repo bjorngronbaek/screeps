@@ -2,7 +2,7 @@
  * Created by Bj�rn on 27-09-2015.
  */
 
-var RoomAnalyzer = require("RoomAnalyzer()");
+var RoomAnalyzer = require("RoomAnalyzer");
 
 var BaseCreep = function(creep) {
     this.creep = creep;
@@ -49,7 +49,7 @@ BaseCreep.prototype.moveToTarget = function() {
 };
 
 BaseCreep.prototype.moveByMemoryPath = function (pos) {
-    this.log("Moving by path");
+    //this.log("Moving by path");
     if (pos && (!this.memoryProp.path  || !this.memoryProp.path.length)) {
         this.log("Calculating path to pos=" + JSON.stringify(pos) + " from pos" + JSON.stringify(this.creep.pos));
         var path = this.creep.pos.findPathTo(pos.x, pos.y);
@@ -72,4 +72,4 @@ BaseCreep.prototype.moveByMemoryPath = function (pos) {
     }
 
     return true;
-};
+;}
