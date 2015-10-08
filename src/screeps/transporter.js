@@ -85,14 +85,18 @@ module.exports = function(creep) {
   });
  }
 
+ var TransporterCreep = require("TransporterCreep");
+ var transporter = new TransporterCreep(creep);
+ roomAnalyzer.analyzeEnergy();
+
  if (undefined === creep.memory.state) {
-  log(creep, 'setting state TRANSPORTING');
+  transporter.log('setting state TRANSPORTING');
   creep.memory.state = 'TRANSPORTING'
  }
 
  if (creep.memory.workerId == undefined || creep.memory.workerId == -1) {
   log(creep, ' no target set, looking...........');
-  setWorker();
+  transporter.setWorker();
  }
 
  if (creep.carry.energy == creep.carryCapacity && creep.memory.state != 'UPGRADING') {

@@ -16,6 +16,7 @@ module.exports = (function () {
         this.isAnalyzedHostiles = false;
         this.isAnalyzedWalls = false;
         this.isAnalyzedControllers = false;
+        this.analysedEnergy = false;
 
         /* creep types */
         this.workerCount = 0;
@@ -60,8 +61,66 @@ module.exports = (function () {
             },
             controllers: {
                 
+            },
+            energy: {
+                givers: {
+                    sources: [],
+                    workers: [],
+                    spawns: [],
+                    stores: [],
+                    extensions: [],
+                    all: []
+                },
+                takers: {
+                    upgraders: [],
+                    spawns: [],
+                    stores: [],
+                    extensions: [],
+                    all: []
+                }
             }
         };
+    }
+    
+    RoomAnalyzer.prototype.analyzeEnergy = function(){
+        if(!this.analysedEnergy){
+            console.log("Analyzing Energy");
+            
+            /* find the energy givers in the room */
+            this.result.energy.givers.sources = this.room.find(FIND_SOURCES);
+            this.result.energy.givers.workers = this.room.find(FIND_MY_CREEPS, {
+                filter : function(c) {return c.memory.role == 'worker' && c.carry.energy > 0}
+            });
+            console.log("found "+this.result.energy.givers.workers.length+" workers");
+            this.result.energy.givers.spawns = this.room.find(FIND_MY_STRUCTURES, {
+                filter : function(s) {return s.energy > 0 && s.structureType == STRUCTURE_SPAWN}
+            });
+            this.result.energy.givers.stores = this.room.find(FIND_MY_STRUCTURES, {
+                filter : function(s) {return s.energy > 0 && s.structureType == STRUCTURE_STORAGE}
+            });
+            this.result.energy.givers.extensions = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.energy > 0 && s.structureType == STRUCTURE_EXTENSION}
+            });
+            
+            /* find the energy takers in the room */
+            this.result.energy.takers.extensions = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.energy < s.energyCapacity && s.structureType == STRUCTURE_EXTENSION}
+            });
+            this.result.energy.takers.spawns = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.energy < s.energyCapacity && s.structureType == STRUCTURE_SPAWN}
+            });
+            this.result.energy.takers.stores = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.energy < s.energyCapacity && s.structureType == STRUCTURE_STORAGE}
+            });
+            this.result.energy.takers.upgraders = this.room.find(FIND_MY_CREEPS, {
+                filter: function(c) {return c.carry.energy < c.carryCapacity && c.memory.role == 'upgrader'}
+            });
+            
+            //console.log(JSON.stringify(this.result));
+            this.analysedEnergy = true;
+        }
+        
+        return this.result;
     }
 
     RoomAnalyzer.prototype.analyzeHostiles = function analyzeHostiles() {

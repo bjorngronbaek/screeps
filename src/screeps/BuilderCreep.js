@@ -60,6 +60,6 @@ BuilderCreep.prototype.findSite = function () {
         }
     }
     else{
-        this.log("Already have a site");
+        //this.log("Already have a site");
     }
 }

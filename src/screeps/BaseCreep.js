@@ -2,10 +2,13 @@
  * Created by Bj�rn on 27-09-2015.
  */
 
+var RoomAnalyzer = require("RoomAnalyzer()");
+
 var BaseCreep = function(creep) {
     this.creep = creep;
     this.memoryProp = creep.memory;
     this.DEBUG = true;
+    this.roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
 };
 
 module.exports = BaseCreep;
