@@ -45,11 +45,11 @@ BuilderCreep.prototype.findSite = function () {
         this.log('finding site. c=' + roomAnalyzer.constructionSiteCount + ' r=' + roomAnalyzer.repairSiteCount)
 
         var site;
-        if (roomAnalyzer.repairSiteCount) {
-            site = roomAnalyzer.repairSites.shift();
-        }
-        else if (roomAnalyzer.constructionSiteCount > 0) {
+        if (roomAnalyzer.constructionSiteCount > 0) {
             site = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+        }
+        else if (roomAnalyzer.repairSiteCount) {
+            site = roomAnalyzer.repairSites.shift();
         }
         else {
             site = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES);

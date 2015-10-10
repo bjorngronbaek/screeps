@@ -68,8 +68,12 @@ module.exports = (function () {
     }
 
     CreepFactory.prototype.spawnUpgrader = function spawnUpgrader(spawn) {
-        var mt = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE];
-        var st = [WORK, CARRY, MOVE];
+        var bt = [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]; //700
+        var mt = [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]; //500
+        var st = [WORK, CARRY, MOVE]; //200
+        if (spawn.canCreateCreep(bt) == 0) {
+            return spawn.createCreep(bt, null, {role: 'upgrader'});
+        }
         if (spawn.canCreateCreep(mt) == 0) {
             return spawn.createCreep(mt, null, {role: 'upgrader'});
         }

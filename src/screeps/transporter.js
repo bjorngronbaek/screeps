@@ -134,7 +134,6 @@ module.exports = function(creep) {
 
   if (creep.memory.structureId && creep.memory.structureId != -1) {
    var structure = Game.getObjectById(creep.memory.structureId);
-   transporter.log('Delivering to '+structure.name);
    if (structure) {
     if (
      (structure.energy < structure.energyCapacity) 
@@ -155,5 +154,5 @@ module.exports = function(creep) {
   }
  }
 
- creep.pos.createConstructionSite(STRUCTURE_ROAD);
+ //creep.pos.createConstructionSite(STRUCTURE_ROAD);
 };

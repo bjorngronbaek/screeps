@@ -35,7 +35,7 @@ module.exports = function(creep) {
             builder.findSite();
             var site = Game.getObjectById(creep.memory.siteId);
             if (site) {
-                creep.pos.createConstructionSite(STRUCTURE_ROAD);
+                //creep.pos.createConstructionSite(STRUCTURE_ROAD);
                 if (creep.pos.isNearTo(site)) {
                     creep.build(site);
                     creep.repair(site);
