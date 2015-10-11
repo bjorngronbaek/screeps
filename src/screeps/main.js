@@ -7,30 +7,31 @@ var spawner = require('spawner');
 var transporter = require('transporter');
 var upgrader = require('upgrader');
 
-Memory.scoutRooms = ['E8N5', 'E9N5','E9N4'];
+module.exports.loop = function() {
 
-for (var name in Game.spawns) {
-    var spawn = Game.spawns[name];
-    spawner(spawn);
-}
+    for (var name in Game.spawns) {
+        var spawn = Game.spawns[name];
+        spawner(spawn);
+    }
 
-for (var name in Game.creeps) {
-    var creep = Game.creeps[name];
+    for (var name in Game.creeps) {
+        var creep = Game.creeps[name];
 
-    if (creep.memory.role == 'worker') {
-        harvester(creep);
-    }
-    if (creep.memory.role == 'builder') {
-        builder(creep);
-    }
-    if (creep.memory.role == 'transporter') {
-        transporter(creep);
-    }
-    if (creep.memory.role == 'guard') {
-        guard(creep);
-    }
-    if (creep.memory.role == 'upgrader') {
-        upgrader(creep);
+        if (creep.memory.role == 'worker') {
+            harvester(creep);
+        }
+        if (creep.memory.role == 'builder') {
+            builder(creep);
+        }
+        if (creep.memory.role == 'transporter') {
+            transporter(creep);
+        }
+        if (creep.memory.role == 'guard') {
+            guard(creep);
+        }
+        if (creep.memory.role == 'upgrader') {
+            upgrader(creep);
+        }
     }
 }
 

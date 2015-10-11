@@ -9,6 +9,7 @@
 module.exports = function (creep) {
     var DEBUG = true;
 
+    var BaseCreep = require('BaseCreep');
     var RoomAnalyzer = require('RoomAnalyzer');
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
 
@@ -130,6 +131,8 @@ module.exports = function (creep) {
         }
     }
 
+    var bc = new BaseCreep(creep);
+    bc.log("Now using base!")
     if(moveToRoom(creep)) {
 
         if (!isTargetSet(creep)) {
@@ -152,8 +155,5 @@ module.exports = function (creep) {
             }
         }
     }
-
-
-
 }
 

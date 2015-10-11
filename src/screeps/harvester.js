@@ -6,46 +6,56 @@
  * var mod = require('harvester'); // -> 'a thing'
  */
 module.exports = function (creep) {
-    function log(creep, message) {
-        //console.log('[HARVESTER] '+creep+': '+message);
+    var BaseCreep = require("BaseCreep");
+    var harvester = new BaseCreep(creep);
+    
+    var RoomAnalyzer = require("RoomAnalyzer");
+    var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
+    
+    if(!creep.memory.targetSourceId){
+        harvester.log("Searching for source");
+        var result = roomAnalyzer.analyzeEnergy();
+        var sources = result.energy.givers.sources;
+        var source = creep.pos.findClosestByPath(sources);
+        creep.memory.targetSourceId = source.id;
     }
-
-    function moveToTargetByPath(target, targetDistance) {
-        if (creep.memory.path && creep.memory.path.length) {
-            var path = creep.memory.path;
-            log(creep, 'path=' + JSON.stringify(path));
-            creep.move(path.shift().direction);
-        }
-        else {
-            if (target) {
-                if (!creep.pos.inRangeTo(target, targetDistance)) {
-                    creep.memory.path = creep.pos.findPathTo(target);
-                }
-                else {
-                    //log(creep,'already in range');
-                }
+    else{
+        var source = Game.getObjectById(creep.memory.targetSourceId);
+        if(creep.pos.isNearTo(source)){
+            if(creep.carry.energy < creep.carryCapacity){
+                //harvester.log("Harvesting");
+                creep.harvest(source);
+            }
+            else{
+                harvester.log("Full, waiting for transport!");
             }
         }
+        else{
+            harvester.log("Moving to source "+JSON.stringify(source.pos));
+            harvester.moveByMemoryPath(source.pos);
+        }
     }
-
-    var source = creep.pos.findClosestByPath(FIND_SOURCES);
-    moveToTargetByPath(source, 1);
-
+    
     if (creep.carry.energy > creep.carryCapacity / 2) {
         var transporters = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
             filter: function (t) {
-                return t.memory.role == 'transporter' && t.memory.workerId == creep.id;
+                //return t.memory.role == 'transporter' && t.memory.workerId == creep.id;
+                return t.memory.role == 'transporter';
             }
         });
         if (transporters.length) {
+            harvester.log("Transfering energy to "+transporters[0].name);
             creep.transferEnergy(transporters[0]);
         }
-        else {
-            creep.harvest(source);
-        }
     }
-    else {
-        creep.harvest(source);
+    
+    var energies = creep.pos.lookFor('energy');
+    harvester.log("Searched for energy, found "+JSON.stringify(energies));
+    if(energies.length){
+        harvester.log("Picking up energy "+JSON.stringify(energies[0]));
+        creep.pickup(energies[0]);
     }
+    
+    creep.pos.createConstructionSite(STRUCTURE_ROAD);
 };
 

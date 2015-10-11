@@ -6,28 +6,24 @@
  * var mod = require('upgrader'); // -> 'a thing'
  */
 
-module.exports = function (creep) {
+module.exports = function(creep) {
     var RoomAnalyzer = require('RoomAnalyzer');
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
-    var DEBUG = 0;
-
-    function log(creep, message) {
-        if (DEBUG) {
-            console.log('[TRANSPORTER] ' + creep.name + ': ' + message)
-        }
-    }
+    var BaseCreep = require("BaseCreep");
+    var upgrader = new BaseCreep(creep);
 
     creep.pos.createConstructionSite(STRUCTURE_ROAD);
+
     if (roomAnalyzer.storeageId != undefined) {
-        var storage = Game.getObjectById(storeageId);
+        var storage = Game.getObjectById(roomAnalyzer.storeageId);
         if (storage.store.energy > 0) {
-            creep.moveTo(storage);
+            upgrader.moveByMemoryPath(storage.pos);
             storage.transferEnergy(creep);
         }
     }
     else if (creep.carry.energy == 0 && creep.room.energyAvailable > 200) {
         var s = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-            filter: function (s) {
+            filter: function(s) {
                 if (s.energy && s.energy > 0) {
                     return true;
                 }
@@ -40,12 +36,17 @@ module.exports = function (creep) {
             creep.memory.structureId = s.id;
         }
         if (s) {
-            creep.moveTo(s);
+            upgrader.moveByMemoryPath(s.pos);
             s.transferEnergy(creep);
         }
     }
     else {
-        creep.moveTo(creep.room.controller);
-        creep.upgradeController(creep.room.controller);
+        if (creep.pos.isNearTo(creep.room.controller)) {
+            creep.upgradeController(creep.room.controller);
+        }
+        else {
+            upgrader.moveByMemoryPath(creep.room.controller.pos);
+        }
+
     }
 };
