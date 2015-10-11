@@ -118,7 +118,7 @@ module.exports = function(creep) {
 
  if (creep.memory.state == 'TRANSPORTING' && worker) {
   if (!creep.pos.isNearTo(worker)) {
-   transporter.log('MOVING to worker' +worker.name);
+   transporter.log('MOVING to worker' + worker.name);
    transporter.moveByMemoryPath(worker.pos);
   }
  }
@@ -134,22 +134,16 @@ module.exports = function(creep) {
 
   if (creep.memory.structureId && creep.memory.structureId != -1) {
    var structure = Game.getObjectById(creep.memory.structureId);
-   if (structure) {
-    if (
-     (structure.energy < structure.energyCapacity) 
-     || (structure.store && structure.store.energy < structure.storeCapacity)
-     || (structure.carry && structure.carry.energy < structure.carryCapacity)
-     ) {
-     if (creep.pos.isNearTo(structure)) {
-      creep.transferEnergy(structure);
-     }
-     else {
-      transporter.moveByMemoryPath(structure.pos);
-     }
+   if (structure && ((structure.energy < structure.energyCapacity) || (structure.store && structure.store.energy < structure.storeCapacity) || (structure.carry && structure.carry.energy < structure.carryCapacity))) {
+    if (creep.pos.isNearTo(structure)) {
+     creep.transferEnergy(structure);
     }
     else {
-     creep.memory.structureId = -1;
+     transporter.moveByMemoryPath(structure.pos);
     }
+   }
+   else {
+    creep.memory.structureId = -1;
    }
   }
  }

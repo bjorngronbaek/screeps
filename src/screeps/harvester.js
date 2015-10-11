@@ -23,7 +23,7 @@ module.exports = function (creep) {
         var source = Game.getObjectById(creep.memory.targetSourceId);
         if(creep.pos.isNearTo(source)){
             if(creep.carry.energy < creep.carryCapacity){
-                harvester.log("Harvesting");
+                //harvester.log("Harvesting");
                 creep.harvest(source);
             }
             else{
@@ -44,14 +44,18 @@ module.exports = function (creep) {
             }
         });
         if (transporters.length) {
-            harvester.log("Transfering energy");
+            harvester.log("Transfering energy to "+transporters[0].name);
             creep.transferEnergy(transporters[0]);
         }
     }
     
     var energies = creep.pos.lookFor('energy');
+    harvester.log("Searched for energy, found "+JSON.stringify(energies));
     if(energies.length){
+        harvester.log("Picking up energy "+JSON.stringify(energies[0]));
         creep.pickup(energies[0]);
     }
+    
+    creep.pos.createConstructionSite(STRUCTURE_ROAD);
 };
 
