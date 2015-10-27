@@ -1,9 +1,15 @@
 module.exports = (function () {
     var RoomAnalyzer = require('RoomAnalyzer');
+    
+    const GUARD = 'guard';
+    const WORKER = 'worker';
+    const TRANSPORTER = 'transporter';
+    const BUILDER = 'builder';
+    const UPGRADER = 'upgrader';
 
     function CreepFactory() {
     }
-
+    
     CreepFactory.prototype.spawnWorker = function spawnWorker(spawn) {
         var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(spawn.room);
         var st = [WORK, CARRY, MOVE];
@@ -13,7 +19,7 @@ module.exports = (function () {
 
         //console.log('creating worker');
         if (roomAnalyzer.extensionCount >= 10 && spawn.canCreateCreep(ebt) == 0) {
-            console.log('creating big worker');
+            console.log('creating extra big worker');
             return spawn.createCreep(ebt, null, {role: 'worker'});
         }
         else if (roomAnalyzer.extensionCount >= 10 && spawn.canCreateCreep(bt) == 0) {
@@ -35,6 +41,7 @@ module.exports = (function () {
         var mt = [CARRY, MOVE, CARRY, MOVE, CARRY, MOVE];
         var bt = [CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE];
         var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(spawn.room);
+        
         if (roomAnalyzer.extensionCount >= 10 && spawn.canCreateCreep(bt) == 0) {
             return spawn.createCreep(bt, null, {role: 'transporter'});
         }

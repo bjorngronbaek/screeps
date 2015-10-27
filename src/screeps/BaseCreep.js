@@ -15,7 +15,7 @@ module.exports = BaseCreep;
 
 BaseCreep.prototype.log = function(message) {
     if (this.DEBUG) {
-        console.log('[' + this.memoryProp.role + '] ' + this.creep.name + ': ' + message);
+        console.log('[' + this.memoryProp.role + '][' + this.creep.name + ']['+this.creep.pos+']' + ': ' + message);
     }
 };
 

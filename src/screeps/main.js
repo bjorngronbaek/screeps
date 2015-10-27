@@ -4,10 +4,13 @@ var harvester = require('harvester');
 var builder = require('builder');
 var guard = require('guard');
 var spawner = require('spawner');
-var transporter = require('transporter');
 var upgrader = require('upgrader');
+var TransporterCreep = require("TransporterCreep");
+var RoomAnalyzer = require("RoomAnalyzer");
 
 module.exports.loop = function() {
+    
+    console.log('---------------- MAIN LOOP ----------------');
 
     for (var name in Game.spawns) {
         var spawn = Game.spawns[name];
@@ -24,7 +27,9 @@ module.exports.loop = function() {
             builder(creep);
         }
         if (creep.memory.role == 'transporter') {
-            transporter(creep);
+            var transporter = new TransporterCreep(creep);
+            transporter.apply()
+            //transporter(creep);
         }
         if (creep.memory.role == 'guard') {
             guard(creep);
@@ -33,6 +38,9 @@ module.exports.loop = function() {
             upgrader(creep);
         }
     }
+    
+    RoomAnalyzer.disposeAll();
+      
 }
 
 function setFlag(role, flag) {

@@ -11,8 +11,7 @@ module.exports = function(creep) {
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
     var BaseCreep = require("BaseCreep");
     var upgrader = new BaseCreep(creep);
-
-    creep.pos.createConstructionSite(STRUCTURE_ROAD);
+    upgrader.DEBUG = false;
 
     if (roomAnalyzer.storeageId != undefined) {
         var storage = Game.getObjectById(roomAnalyzer.storeageId);

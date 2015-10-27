@@ -17,6 +17,7 @@ module.exports = (function () {
         this.isAnalyzedWalls = false;
         this.isAnalyzedControllers = false;
         this.analysedEnergy = false;
+        this.isAnalyzedFriendlies = false;
 
         /* creep types */
         this.workerCount = 0;
@@ -56,11 +57,20 @@ module.exports = (function () {
                     count: 0
                 }
             },
-            structures: {
-                all: []
-            },
-            controllers: {
-                
+            friendlies: {
+                creeps: {
+                    workers: [],
+                    transporters: [],
+                    upgraders: [],
+                    builders: [],
+                    guards: []
+                },
+                structures: {
+                    spawns: [],
+                    extensions: [],
+                    links: [],
+                    stores: []
+                }
             },
             energy: {
                 givers: {
@@ -82,16 +92,57 @@ module.exports = (function () {
         };
     }
     
+    RoomAnalyzer.prototype.log = function(message){
+        console.log('[Analyzer]: '+message);
+    }
+    
+    RoomAnalyzer.prototype.analyzeFriendlies = function(){
+        if(!this.isAnalyzedFriendlies){
+            this.log("analysing friendlies");
+            this.isAnalyzedFriendlies = true;
+            
+            this.result.friendlies.creeps.workers = this.room.find(FIND_MY_CREEPS, {
+                filter: function(c){ return c.memory.role == 'worker'; }
+            });
+            this.result.friendlies.creeps.transporters = this.room.find(FIND_MY_CREEPS, {
+                filter: function(c){ return c.memory.role == 'transporter'; }
+            });
+            this.result.friendlies.creeps.upgraders = this.room.find(FIND_MY_CREEPS, {
+                filter: function(c){ return c.memory.role == 'upgrader'; }
+            });
+            this.result.friendlies.creeps.builders = this.room.find(FIND_MY_CREEPS, {
+                filter: function(c){ return c.memory.role == 'builder'; }
+            });
+            this.result.friendlies.creeps.guards = this.room.find(FIND_MY_CREEPS, {
+                filter: function(c){ return c.memory.role == 'guards'; }
+            });
+            
+            
+            this.result.friendlies.structures.spawns = this.room.find(FIND_MY_SPAWNS);
+            this.result.friendlies.structures.extensions = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.structureType == STRUCTURE_EXTENSION}
+            });
+            this.result.friendlies.structures.stores = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.structureType == STRUCTURE_STORAGE}
+            });
+            this.result.friendlies.structures.links = this.room.find(FIND_MY_STRUCTURES, {
+                filter: function(s) {return s.structureType == STRUCTURE_LINK}
+            });
+
+            
+        }
+        return this.result;
+    }
+    
     RoomAnalyzer.prototype.analyzeEnergy = function(){
         if(!this.analysedEnergy){
-            console.log("Analyzing Energy");
-            
+            this.log("analysing energy");
+
             /* find the energy givers in the room */
             this.result.energy.givers.sources = this.room.find(FIND_SOURCES);
             this.result.energy.givers.workers = this.room.find(FIND_MY_CREEPS, {
                 filter : function(c) {return c.memory.role == 'worker' && c.carry.energy > 0}
             });
-            console.log("found "+this.result.energy.givers.workers.length+" workers");
             this.result.energy.givers.spawns = this.room.find(FIND_MY_STRUCTURES, {
                 filter : function(s) {return s.energy > 0 && s.structureType == STRUCTURE_SPAWN}
             });
@@ -125,6 +176,7 @@ module.exports = (function () {
 
     RoomAnalyzer.prototype.analyzeHostiles = function analyzeHostiles() {
         if (!this.isAnalyzedHostiles) {
+            this.log("analysing hostiles");
             this.result.hostiles.creeps.attackers = this.room.find(FIND_HOSTILE_CREEPS,
                 {
                     filter: function (c) {
@@ -173,7 +225,7 @@ module.exports = (function () {
 
     RoomAnalyzer.prototype.analyze = function analyze() {
         if (this.analyzed == 0) {
-            //console.log('Analyzing room '+this.roomName);
+            this.log("analysing OLD");
             var workers = this.room.find(FIND_MY_CREEPS, {
                 filter: function (creep) {
                     return creep.memory.role == 'worker';
@@ -293,7 +345,18 @@ module.exports = (function () {
         RoomAnalyzer.rooms[roomName].analyze();
         return RoomAnalyzer.rooms[roomName];
     };
+    
+    RoomAnalyzer.prototype.dispose = function dispose() {
+        this.analyzis = 0;
+        this.room = this.result = null;
+        delete RoomAnalyzer.rooms[this.roomName];
+    };
+
+    RoomAnalyzer.disposeAll = function disposeAll() {
+        Object.keys(RoomAnalyzer.rooms).forEach(function (key) {
+            RoomAnalyzer.rooms[key].dispose();
+        });
+    };
 
     return RoomAnalyzer;
 })();
-
