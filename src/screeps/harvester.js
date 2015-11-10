@@ -12,12 +12,16 @@ module.exports = function (creep) {
     var RoomAnalyzer = require("RoomAnalyzer");
     var roomAnalyzer = RoomAnalyzer.getRoomAnalyzer(creep.room);
     
+    harvester.DEBUG = false;
+    
     if(!creep.memory.targetSourceId){
         harvester.log("Searching for source");
         var result = roomAnalyzer.analyzeEnergy();
         var sources = result.energy.givers.sources;
         var source = creep.pos.findClosestByPath(sources);
-        creep.memory.targetSourceId = source.id;
+        if(source){
+            creep.memory.targetSourceId = source.id;
+        }
     }
     else{
         var source = Game.getObjectById(creep.memory.targetSourceId);
@@ -56,6 +60,5 @@ module.exports = function (creep) {
         creep.pickup(energies[0]);
     }
     
-    creep.pos.createConstructionSite(STRUCTURE_ROAD);
 };
 
