@@ -77,7 +77,7 @@ TransporterCreep.prototype.findGiver = function() {
 
 TransporterCreep.prototype.apply = function() {
     if (this.creep.carry.energy > 0) {
-        this.log('Have energy!')
+        this.log('Have energy!');
         if (this.memoryProp.takerId) {
             var taker = Game.getObjectById(this.memoryProp.takerId);
             
@@ -105,13 +105,16 @@ TransporterCreep.prototype.apply = function() {
             var newTaker = this.findTaker();
             this.log('Takers: '+newTaker);
             if (newTaker) {
-                this.log('Found taker ' + newTaker.pos)
+                this.log('Found taker ' + newTaker.pos);
                 this.memoryProp.takerId = newTaker.id;
                 this.memoryProp.path = null;
             }
         }
     }
     else {
+        /* reset the taker */
+        this.memoryProp.takerId = null;
+        this.memoryProp.path = null;
         /* are we assigned to a worker? */
         if (this.memoryProp.workerId) {
             var worker = Game.getObjectById(this.memoryProp.workerId);
@@ -136,18 +139,24 @@ function requiresEnergy(structure) {
         return false;
     }
     
-    console.log("Checking energy requirements for type "+structure.structureType);
-    switch (structure.structureType) {
-        case STRUCTURE_EXTENSION:
-            return structure.energy < structure.energyCapacity;
-            break;
-        case STRUCTURE_SPAWN:
-            return structure.energy < structure.energyCapacity;
-            break;  
-        case STRUCTURE_STORAGE:
-            return structure.store < structure.storeCapacity;
-            break
-        default:
-            return false;
+    if(structure.structureType){
+        console.log("Checking energy requirements for type "+structure.structureType);
+        switch (structure.structureType) {
+            case STRUCTURE_EXTENSION:
+                return structure.energy < structure.energyCapacity;
+                break;
+            case STRUCTURE_SPAWN:
+                return structure.energy < structure.energyCapacity;
+                break;  
+            case STRUCTURE_STORAGE:
+                return structure.store.energy < structure.storeCapacity;
+                break
+            default:
+                return false;
+        }
+    }
+    
+    if(structure.carryCapacity){
+        return structure.carry.energy < structure.carryCapacity / 2;
     }
 }

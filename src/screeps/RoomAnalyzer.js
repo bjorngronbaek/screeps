@@ -161,18 +161,18 @@ module.exports = (function () {
                 filter: function(s) {return s.energy < s.energyCapacity && s.structureType == STRUCTURE_SPAWN}
             });
             this.result.energy.takers.stores = this.room.find(FIND_MY_STRUCTURES, {
-                filter: function(s) {return s.energy < s.energyCapacity && s.structureType == STRUCTURE_STORAGE}
+                filter: function(s) {return s.structureType == STRUCTURE_STORAGE && s.store.energy < s.storeCapacity}
             });
             this.result.energy.takers.upgraders = this.room.find(FIND_MY_CREEPS, {
-                filter: function(c) {return c.carry.energy < c.carryCapacity && c.memory.role == 'upgrader'}
+                filter: function(c) {return c.carry.energy < c.carryCapacity / 2 && c.memory.role == 'upgrader'}
             });
             
-            //console.log(JSON.stringify(this.result));
+            console.log(JSON.stringify(this.result));
             this.analysedEnergy = true;
         }
         
         return this.result;
-    }
+    };
 
     RoomAnalyzer.prototype.analyzeHostiles = function analyzeHostiles() {
         if (!this.isAnalyzedHostiles) {
@@ -282,21 +282,21 @@ module.exports = (function () {
                 filter: function (creep) {
                     return creep.memory.role == 'guard';
                 }
-            })
+            });
             if (guards) this.guardCount = guards.length;
 
             var builders = this.room.find(FIND_MY_CREEPS, {
                 filter: function (creep) {
                     return creep.memory.role == 'builder';
                 }
-            })
+            });
             if (builders) this.builderCount = builders.length;
 
             var upgraders = this.room.find(FIND_MY_CREEPS, {
                 filter: function (creep) {
                     return creep.memory.role == 'upgrader';
                 }
-            })
+            });
             if (upgraders) this.upgraderCount = upgraders.length;
 
             var constructionSites = this.room.find(FIND_CONSTRUCTION_SITES);
@@ -307,15 +307,10 @@ module.exports = (function () {
 
             var myStructures = this.repairSites = this.room.find(FIND_MY_STRUCTURES, {
                 filter: function (i) {
-                    return i.hits < i.hitsMax / 2 && i.hits < 1500000;
+                    return i.hits < i.hitsMax / 2 && i.hits < 5000000;
                 }
             });
-            var myWalls = this.room.find(FIND_STRUCTURES, {
-                filter: function (struct) {
-                    return struct.structureType == STRUCTURE_WALL && struct.hits < 1500000 && struct.hits < struct.hitsMax;
-                }
-            });
-            this.repairSites = myStructures.concat(myWalls);
+            this.repairSites = myStructures;
             this.repairSiteCount = this.repairSites.length;
             this.repairSites.sort(function (a, b) {
                 return a.hits - b.hits;
